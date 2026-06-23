@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Happy Birthday, Princess ♛</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --gold:       #C9A84C;
+  --gold-light: #E8C96A;
+  --gold-pale:  #F5E6B8;
+  --gold-dim:   #8B6914;
+  --rose-deep:  #8B1A4A;
+  --rose-mid:   #C0385A;
+  --rose-light: #E8789A;
+  --ivory:      #FAF6EE;
+  --ivory-dark: #F0E8D8;
+  --parchment:  #EDE0C4;
+  --text-dark:  #2C0A1A;
+  --text-mid:   #6B2040;
+}
+
+body{
+  font-family:'EB Garamond',Georgia,serif;
+  background-color:#1a0410;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% 0%,  rgba(139,26,74,0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 50% 100%,rgba(139,26,74,0.25) 0%, transparent 70%),
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 28px,
+      rgba(201,168,76,0.04) 28px,
+      rgba(201,168,76,0.04) 29px
+    );
+  min-height:100vh;
+  overflow-x:hidden;
+  color:var(--ivory);
+}
+
+/* ── PARTICLE CANVAS ── */
+#canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* ── GOLD SHIMMER KEYFRAMES ── */
+@keyframes shimmer{
+  0%,100%{opacity:.7} 50%{opacity:1}
+}
+@keyframes floatY{
+  0%,100%{transform:translateY(0)}  50%{transform:translateY(-10px)}
+}
+@keyframes crownGlow{
+  0%,100%{text-shadow:0 0 20px rgba(201,168,76,.5),0 0 40px rgba(201,168,76,.2)}
+  50%{text-shadow:0 0 30px rgba(201,168,76,.9),0 0 60px rgba(201,168,76,.4),0 0 90px rgba(201,168,76,.2)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)}
+}
+@keyframes borderPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.0),inset 0 0 40px rgba(201,168,76,.05)}
+  50%{box-shadow:0 0 30px rgba(201,168,76,.15),inset 0 0 40px rgba(201,168,76,.10)}
+}
+@keyframes tickSec{
+  from{transform:rotate(0deg)} to{transform:rotate(360deg)}
+}
+
+/* ── LAYOUT ── */
+.page{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  padding:60px 20px 100px;
+  gap:40px;
+  max-width:720px;margin:0 auto;
+}
+
+/* ── GOLD RULE ── */
+.rule{
+  display:flex;align-items:center;gap:14px;
+  width:100%;max-width:520px;
+}
+.rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.rule-diamond{
+  width:9px;height:9px;
+  background:var(--gold);
+  transform:rotate(45deg);
+  flex-shrink:0;
+  box-shadow:0 0 8px var(--gold);
+}
+
+/* ── CROWN HEADER ── */
+.crown-section{text-align:center;animation:fadeUp .8s ease both}
+.crown{
+  font-size:72px;
+  display:block;
+  animation:crownGlow 2.5s ease-in-out infinite, floatY 4s ease-in-out infinite;
+  line-height:1;
+  margin-bottom:16px;
+}
+.eyebrow{
+  font-family:'Cinzel',serif;
+  font-size:11px;font-weight:600;
+  letter-spacing:5px;text-transform:uppercase;
+  color:var(--gold);opacity:.85;
+  margin-bottom:18px;
+}
+.hero-name{
+  font-family:'Cinzel',serif;
+  font-size:clamp(14px,4vw,20px);
+  font-weight:400;
+  letter-spacing:7px;
+  color:var(--gold-light);
+  margin-bottom:10px;
+  text-transform:uppercase;
+}
+.hero-title{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:clamp(48px,12vw,88px);
+  font-weight:700;font-style:italic;
+  line-height:1;
+  background:linear-gradient(160deg,var(--gold-pale) 0%,var(--gold) 40%,var(--gold-light) 60%,var(--gold-dim) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.hero-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-style:italic;
+  color:var(--rose-light);opacity:.9;
+}
+
+/* ── PANEL BASE ── */
+.panel{
+  width:100%;
+  background:linear-gradient(160deg, rgba(250,246,238,.06) 0%, rgba(250,246,238,.03) 100%);
+  border:1px solid rgba(201,168,76,.35);
+  border-radius:4px;
+  padding:44px 40px;
+  position:relative;
+  animation:fadeUp .9s ease both, borderPulse 4s ease-in-out infinite;
+  backdrop-filter:blur(4px);
+}
+/* corner ornaments */
+.panel::before,.panel::after{
+  content:'✦';
+  position:absolute;
+  font-size:14px;color:var(--gold);opacity:.55;
+}
+.panel::before{top:12px;left:16px}
+.panel::after{bottom:12px;right:16px}
+.panel-corner-tr,.panel-corner-bl{
+  position:absolute;font-size:14px;color:var(--gold);opacity:.55;
+  pointer-events:none;
+}
+.panel-corner-tr{top:12px;right:16px}
+.panel-corner-bl{bottom:12px;left:16px}
+
+.panel-title{
+  font-family:'Cinzel',serif;
+  font-size:13px;font-weight:600;
+  letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);
+  text-align:center;margin-bottom:28px;
+}
+
+/* ── BIRTH DATE PANEL ── */
+.date-trio{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  margin-bottom:32px;
+}
+.date-cell{
+  text-align:center;
+  background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.25);
+  border-radius:2px;
+  padding:24px 12px;
+  position:relative;
+}
+.date-cell::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.date-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:52px;font-weight:700;
+  color:var(--gold-light);
+  line-height:1;display:block;
+}
+.date-word{
+  font-family:'Cormorant Garamond',serif;
+  font-size:36px;font-weight:600;font-style:italic;
+  color:var(--gold-light);
+  line-height:1;display:block;
+}
+.date-lbl{
+  font-family:'Cinzel',serif;
+  font-size:9px;font-weight:600;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);opacity:.7;
+  margin-top:8px;display:block;
+}
+
+.age-proclamation{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-style:italic;
+  color:var(--ivory-dark);line-height:1.7;
+}
+.age-proclamation strong{
+  font-family:'Cinzel',serif;
+  font-size:42px;font-weight:700;font-style:normal;
+  background:linear-gradient(135deg,var(--gold-pale),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;margin:6px 0;
+  text-shadow:none;
+}
+
+/* ── COUNTDOWN ── */
+.cd-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
+  margin-bottom:20px;
+}
+.cd-cell{
+  text-align:center;
+  background:rgba(201,168,76,.05);
+  border:1px solid rgba(201,168,76,.2);
+  border-radius:2px;
+  padding:20px 8px;
+}
+.cd-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:44px;font-weight:700;
+  color:var(--gold-light);
+  line-height:1;display:block;
+}
+.cd-lbl{
+  font-family:'Cinzel',serif;
+  font-size:8px;font-weight:600;letter-spacing:3px;text-transform:uppercase;
+  color:var(--gold);opacity:.65;
+  margin-top:6px;display:block;
+}
+.cd-status{
+  text-align:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:18px;font-style:italic;
+  color:var(--rose-light);
+}
+
+/* ── WISHES ── */
+.wish-list{list-style:none;display:flex;flex-direction:column;gap:20px}
+.wish-item{
+  display:flex;align-items:flex-start;gap:16px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgba(201,168,76,.12);
+}
+.wish-item:last-child{border-bottom:none;padding-bottom:0}
+.wish-num{
+  font-family:'Cinzel',serif;
+  font-size:11px;font-weight:600;letter-spacing:2px;
+  color:var(--gold);opacity:.6;
+  flex-shrink:0;padding-top:3px;
+}
+.wish-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;line-height:1.65;
+  color:var(--ivory-dark);
+}
+
+/* ── SEAL ── */
+.royal-seal{
+  text-align:center;
+  animation:fadeUp 1s ease both;
+}
+.seal-ring{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:100px;height:100px;
+  border-radius:50%;
+  border:2px solid var(--gold);
+  background:radial-gradient(circle,rgba(201,168,76,.12),transparent);
+  font-size:44px;
+  animation:floatY 5s ease-in-out infinite, crownGlow 3s ease-in-out infinite;
+  box-shadow:0 0 0 6px rgba(201,168,76,.08),0 0 0 12px rgba(201,168,76,.04);
+  margin-bottom:16px;
+}
+.seal-text{
+  font-family:'Cinzel',serif;
+  font-size:10px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--gold);opacity:.6;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:500px){
+  .panel{padding:32px 20px}
+  .date-num{font-size:38px}
+  .cd-num{font-size:32px}
+  .hero-title{font-size:clamp(40px,14vw,72px)}
+  .age-proclamation strong{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="page">
+
+  <!-- CROWN HERO -->
+  <section class="crown-section">
+    <span class="crown">♛</span>
+    <p class="eyebrow">A Royal Celebration</p>
+    <p class="hero-name">For My Dearest Sister</p>
+    <h1 class="hero-title">Happy Birthday</h1>
+    <p class="hero-sub">May your day be as magnificent as you are</p>
+  </section>
+
+  <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+
+  <!-- BIRTH DATE PANEL -->
+  <div class="panel" style="animation-delay:.15s">
+    <span class="panel-corner-tr">✦</span>
+    <span class="panel-corner-bl">✦</span>
+    <p class="panel-title">✦ &nbsp; Her Royal Birth Date &nbsp; ✦</p>
+
+    <div class="date-trio">
+      <div class="date-cell">
+        <span class="date-num">29</span>
+        <span class="date-lbl">Day</span>
+      </div>
+      <div class="date-cell">
+        <span class="date-word">June</span>
+        <span class="date-lbl">Month</span>
+      </div>
+      <div class="date-cell">
+        <span class="date-num">2015</span>
+        <span class="date-lbl">Year</span>
+      </div>
+    </div>
+
+    <p class="age-proclamation">
+      On this glorious day she graces us with
+      <strong id="age-num">11</strong>
+      years of her radiant presence
+    </p>
+  </div>
+
+  <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+
+  <!-- COUNTDOWN -->
+  <div class="panel" style="animation-delay:.25s">
+    <span class="panel-corner-tr">✦</span>
+    <span class="panel-corner-bl">✦</span>
+    <p class="panel-title">✦ &nbsp; Countdown to the Celebration &nbsp; ✦</p>
+    <div class="cd-grid">
+      <div class="cd-cell"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl">Days</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl">Hours</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl">Minutes</span></div>
+      <div class="cd-cell"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl">Seconds</span></div>
+    </div>
+    <p class="cd-status" id="cd-msg"></p>
+  </div>
+
+  <div class="rule"><div class="rule-line"></div><div class="rule-diamond"></div><div class="rule-line"></div></div>
+
+  <!-- ROYAL WISHES -->
+  <div class="panel" style="animation-delay:.35s">
+    <span class="panel-corner-tr">✦</span>
+    <span class="panel-corner-bl">✦</span>
+    <p class="panel-title">✦ &nbsp; Royal Proclamations of Love &nbsp; ✦</p>
+    <ul class="wish-list">
+      <li class="wish-item">
+        <span class="wish-num">I</span>
+        <span class="wish-text">May your crown never slip — you were born to carry grace with every step you take.</span>
+      </li>
+      <li class="wish-item">
+        <span class="wish-num">II</span>
+        <span class="wish-text">May joy follow you like sunlight follows morning, faithful and golden and warm.</span>
+      </li>
+      <li class="wish-item">
+        <span class="wish-num">III</span>
+        <span class="wish-text">May every dream you hold in your heart bloom into something more beautiful than you imagined.</span>
+      </li>
+      <li class="wish-item">
+        <span class="wish-num">IV</span>
+        <span class="wish-text">May the world treat you with all the kindness and wonder that you so generously give.</span>
+      </li>
+      <li class="wish-item">
+        <span class="wish-num">V</span>
+        <span class="wish-text">You are my favourite person in the whole kingdom — happy birthday, dearest sister. 💛</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- ROYAL SEAL -->
+  <div class="royal-seal">
+    <div class="seal-ring">♛</div>
+    <p class="seal-text">With love &nbsp;·&nbsp; Always &nbsp;·&nbsp; Forever</p>
+  </div>
+
+</div>
+
+<script>
+/* ── AGE ── */
+const bday = new Date('2015-06-29');
+function calcAge(){
+  const n = new Date();
+  let a = n.getFullYear()-bday.getFullYear();
+  if(n.getMonth()<5||(n.getMonth()===5&&n.getDate()<29)) a--;
+  return a;
+}
+document.getElementById('age-num').textContent = calcAge();
+
+/* ── COUNTDOWN ── */
+function tick(){
+  const n = new Date();
+  const isBday = n.getMonth()===5 && n.getDate()===29;
+  let next = new Date(n.getFullYear(),5,29);
+  if(n>next) next = new Date(n.getFullYear()+1,5,29);
+  const msg = document.getElementById('cd-msg');
+  if(isBday){
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>document.getElementById(id).textContent='♛');
+    msg.textContent='✦  Today is Her Royal Birthday  ✦';
+    return;
+  }
+  const diff = next - n;
+  const pad = v=>String(v).padStart(2,'0');
+  document.getElementById('cd-d').textContent = pad(Math.floor(diff/86400000));
+  document.getElementById('cd-h').textContent = pad(Math.floor((diff%86400000)/3600000));
+  document.getElementById('cd-m').textContent = pad(Math.floor((diff%3600000)/60000));
+  document.getElementById('cd-s').textContent = pad(Math.floor((diff%60000)/1000));
+  const d = Math.floor(diff/86400000);
+  msg.textContent = d===0 ? '✦  Tomorrow the kingdom celebrates  ✦'
+                  : d===1 ? '✦  One day until the royal celebration  ✦'
+                  : `✦  The kingdom awaits ${d} more days  ✦`;
+}
+tick(); setInterval(tick,1000);
+
+/* ── GOLD PARTICLE SYSTEM ── */
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let W,H,particles=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
+resize();window.addEventListener('resize',resize);
+
+const GOLD_SHADES=['rgba(201,168,76,','rgba(232,201,106,','rgba(245,230,184,','rgba(139,105,20,'];
+
+class Particle{
+  constructor(){this.reset(true)}
+  reset(init=false){
+    this.x=Math.random()*W;
+    this.y=init?Math.random()*H:-10;
+    this.size=.5+Math.random()*2.5;
+    this.vy=.15+Math.random()*.5;
+    this.vx=(Math.random()-.5)*.3;
+    this.alpha=0;
+    this.maxAlpha=.2+Math.random()*.5;
+    this.fadeIn=true;
+    this.life=0;
+    this.maxLife=200+Math.random()*300;
+    this.shade=GOLD_SHADES[Math.floor(Math.random()*GOLD_SHADES.length)];
+    this.shape=Math.random()<.3?'diamond':'circle';
+    this.rot=Math.random()*Math.PI*2;
+    this.vrot=(Math.random()-.5)*.02;
+  }
+  update(){
+    this.x+=this.vx; this.y+=this.vy; this.rot+=this.vrot; this.life++;
+    if(this.fadeIn){
+      this.alpha+=.01;
+      if(this.alpha>=this.maxAlpha) this.fadeIn=false;
+    }
+    if(this.life>this.maxLife*0.8) this.alpha-=.008;
+    if(this.alpha<0||this.y>H+20) this.reset();
+  }
+  draw(){
+    ctx.save();
+    ctx.globalAlpha=Math.max(0,this.alpha);
+    ctx.fillStyle=this.shade+'1)';
+    ctx.translate(this.x,this.y);
+    if(this.shape==='diamond'){
+      ctx.rotate(this.rot);
+      ctx.beginPath();
+      ctx.moveTo(0,-this.size*1.5);
+      ctx.lineTo(this.size,0);
+      ctx.lineTo(0,this.size*1.5);
+      ctx.lineTo(-this.size,0);
+      ctx.closePath();
+    } else {
+      ctx.beginPath();ctx.arc(0,0,this.size,0,Math.PI*2);
+    }
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+for(let i=0;i<120;i++) particles.push(new Particle());
+setInterval(()=>{ if(particles.length<160) particles.push(new Particle()) },400);
+
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  particles.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>
